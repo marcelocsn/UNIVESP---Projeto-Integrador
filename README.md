@@ -23,10 +23,10 @@ Aguarde o final de cada instalação antes de iniciar a próxima! O tempo pode v
 
 npm install --global yarn
 
-=> Em sequência, adicione o "formik" e o "yup" que serão as bibliotecas responsáveis pela formatação do formulário. Basta rodar o seguinte comando na pasta "client":
+=> Em sequência, adicione o "formik", "axios" e o "yup" que serão as bibliotecas responsáveis pela formatação do formulário. Basta rodar o seguinte comando na pasta "client":
 
 
-yarn add formik yup
+yarn add formik yup axios
 
 ------
 >Pasta Server
