@@ -19,6 +19,7 @@ Aguarde o final de cada instalação antes de iniciar a próxima! O tempo pode v
 ----------
 >Pasta Client
 
+
 => Após a instalação do Node.js já estará disponível o comando npm. Acesse uma janela do terminal (Linux ou Mac) ou prompt de comando (Windows, git bash), entre na pasta client utilizando o comando "cd client" e execute os comandos em sequência:  
 
 npm install --global yarn
@@ -31,6 +32,16 @@ yarn init
 
 
 yarn add formik yup
+=======
+=> Após a instalação do Node.js já estará disponível o comando npm. Acesse uma janela do terminal (Linux ou Mac) ou prompt de comando (Windows, git bash), entre na pasta client utilizando o comando "cd client" e execute o comando:  
+
+npm install --global yarn
+
+=> Em sequência, adicione o "formik", "axios" e o "yup" que serão as bibliotecas responsáveis pela formatação do formulário. Basta rodar o seguinte comando na pasta "client":
+
+
+yarn add formik yup axios
+
 
 ------
 >Pasta Server
