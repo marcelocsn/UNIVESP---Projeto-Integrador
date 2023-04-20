@@ -5,6 +5,7 @@ const cors = require("cors");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+//Dados para conexão com o banco de dados
 const db = mysql.createPool({
   host: "localhost",
   user: "root",
@@ -14,6 +15,36 @@ const db = mysql.createPool({
 
 app.use(express.json());
 app.use(cors());
+
+app.get("/getData", (req,res)=>{
+
+  let sqlQuery = "SELECT * from usuarios";
+  db.query(sqlQuery,(err,result)=>{
+    if (err) console.log(err);
+    else res.send(result);
+  });
+  
+});
+
+app.get("/getById/:email", (req,res)=>{
+
+  const {email} = req.params;
+  let sqlQuery = "SELECT * from usuarios WHERE email = ?";
+  db.query(sqlQuery, [email], (err,result)=>{
+    if (err) console.log(err);
+    else res.send(result);
+  });
+  
+});
+
+app.delete("/delete/:email", (req, res) =>{
+  const {email} = req.params;
+  let SQL = "DELETE FROM usuarios WHERE email = ?";
+  db.query(SQL, [email], (err, result)=>{
+    if (err) console.log(err);
+    else res.send(result);
+  });
+});
 
 app.post("/register", (req, res) => {
   const email = req.body.email;
