@@ -11,19 +11,8 @@ import { useParams } from "react-router-dom";
 //import logo from "../images/logo.png";
 //import { useState } from "react";
 
-    
-
-    const handleLogin = (values) => {
-      Axios.post("http://localhost:3001/login", {
-        email: values.email,
-        password: values.password,
-      }).then((response) => {
-        alert(response.data.msg);
-      });
-    };
-  
-    const handleRegister = (values) => {
-      Axios.post("http://localhost:3001/register", {
+    const handleUpdate = (values) => {
+      Axios.put("http://localhost:3001/edit", {
         email: values.email,
         password: values.password,
       }).then((response) => {
@@ -58,23 +47,26 @@ import { useParams } from "react-router-dom";
         .required("A confirmação da senha é obrigatória"),
     });
 
+
+
 function Update(){
   
     
     //Captura o id do aluno passado por parâmetro na URL
     const emailAluno = useParams();
     
-    console.log(emailAluno);
+    //console.log(emailAluno);
 
     const [dadosAluno, setDadosAluno] = useState([]);
 
 
     //Busca os dados do aluno com o id passado por parâmetro
     useEffect (() =>{
-      Axios.get(`http://localhost:3001/getById/${emailAluno.email}`).then((response) => {
+      Axios.get(`http://localhost:3001/getById/${emailAluno.email}`)
+        .then((response) => {
         setDadosAluno(response.data);
-      });
-    }, []);
+        })
+      }, []);
 
     //Testar se esta recebendo os dados
     console.log(dadosAluno.email);
@@ -87,9 +79,9 @@ function Update(){
           <h1>Cadastro</h1>
           <Formik
             enableReinitialize={true} 
-            initialValues={{profissao: 'op1', email: dadosAluno.password}}
-            onSubmit={handleRegister}
-            validationSchema={validationsRegister}
+            initialValues={{profissao: 'op1', email: dadosAluno.email}}
+            onSubmit={handleUpdate}
+            //validationSchema={validationsRegister}
             
           >
             {props => (
@@ -124,7 +116,7 @@ function Update(){
               {props.values.profissao === 'op1'&& (
               <div className="form-group">
                 <Field
-                  name="confirmation"
+                  name="password"
                   className="form-field"
                   placeholder="Senha"
                   //value={props.values.profissao}
@@ -152,8 +144,8 @@ function Update(){
                 />
               </div>
 
-              <button  /*onClick={submitReview} disabled ={!isValid} */ className="button" type="submit">
-                Cadastrar
+              <button  /*onClick={handleUpdate(props.values)} /*disabled ={!isValid}*/ className="button" type="submit">
+                Salvar
               </button>
             </Form>
             )}

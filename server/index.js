@@ -37,6 +37,19 @@ app.get("/getById/:email", (req,res)=>{
   
 });
 
+app.put("/edit", (req,res)=>{
+
+  const email = req.body.email;
+  const password = req.body.password;
+
+  let sqlQuery = "UPDATE usuarios SET password = ? WHERE email = ?";
+  db.query(sqlQuery, [password,email], (err,result)=>{
+    if (err) console.log(err);
+    else res.send({ msg: "Dados atualizados com sucesso" });
+  });
+  
+});
+
 app.delete("/delete/:email", (req, res) =>{
   const {email} = req.params;
   let SQL = "DELETE FROM usuarios WHERE email = ?";
