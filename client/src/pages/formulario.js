@@ -130,7 +130,7 @@ function Formulario() {
           remanescente: 'Nao',
           rg: '',
           cpf: '',
-          sexo: '',
+          sexo: 'M',
           telefoneCelular: '',
           telefoneContato: '',
           natural: '',
@@ -210,28 +210,6 @@ function Formulario() {
           religiao: '',
           nivelInstrucao:'',
           // adicione todos os campos aqui
-          /*sexo: '',
-          categoriaDaCnh: 'A',
-          pelotao: '1º',
-          numeroAluno: '01',
-          remanescente: 'Nao',
-          estadoCivil: 'Solteiro',
-          possuiFilhosQuantos: '0',
-          nivelInstrucao: '2º Grau',
-          tipoDeConta: 'Corrente',
-          tipoSanguineo: 'A',
-          fatorRh: 'Positivo',
-          ufNascimento: 'SP',
-          jaFoiConduzidoAoDp: 'N',
-          tomouVacinaDaCovid: '0',
-          possuiMoto: 'N',
-          possuiCarro: 'N',
-          possuiParentesPM: '',
-          ufNascimento: 'SP',
-          jaFoiConduzidoAoDp: 'N',
-          remanescente: 'Nao',
-          tomouVacinaDaCovid: '',
-          nivelInstrucao: '',*/
       }}
       >
       {props => (/*render = {({values})=> (*/
@@ -290,7 +268,6 @@ function Formulario() {
                 <Field as='select'
                   id="sexo"
                   name="sexo">
-                    <option value="" disabled>Selecione</option>
                     <option value="M">Masculino</option>
                     <option value="F">Feminino</option>
                 </Field>
