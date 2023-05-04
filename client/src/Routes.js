@@ -15,7 +15,7 @@ export default function mainRoutes()  {
             <Route path="/login" element = {<Login/>}/>
             <Route path="/cadastro" element = {<Cadastro/>}/>
             <Route path="/admin" element = {<Admin/>}/>
-            <Route path="/update/:email?" element = {<Update/>}/>
+            <Route path="/update/:id?" element = {<Update/>}/>
         </Routes>
     );
 }

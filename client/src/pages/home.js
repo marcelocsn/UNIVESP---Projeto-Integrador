@@ -17,6 +17,7 @@ function App() {
       password: values.password,
     }).then((response) => {
       alert(response.data.msg);
+      if (response.data.msg === "Usuário logado") window.open("http://localhost:3000/cadastro", "_self");
     });
   };
 
@@ -79,7 +80,7 @@ function App() {
           </div>
           {/*Outro campo*/}
           <div className="form-group">
-            <Field name="password" className="form-field" placeholder="Senha" />
+            <Field type="password" name="password" className="form-field" placeholder="Senha" />
 
             <ErrorMessage
               component="span"
@@ -112,7 +113,7 @@ function App() {
           </div>
 
           <div className="form-group">
-            <Field name="password" className="form-field" placeholder="Senha" />
+            <Field type="password" name="password" className="form-field" placeholder="Senha" />
 
             <ErrorMessage
               component="span"
@@ -123,6 +124,7 @@ function App() {
 
           <div className="form-group">
             <Field
+              type="password"
               name="confirmation"
               className="form-field"
               placeholder="Senha"

@@ -12,8 +12,8 @@ import "../App.css";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 
  
-const handleDelete = (email) => {
-    Axios.delete(`http://localhost:3001/delete/${email}`)
+const handleDelete = (id) => {
+    Axios.delete(`http://localhost:3001/delete/${id}`)
  }
 
 function Cadastro(){
@@ -32,8 +32,10 @@ function Cadastro(){
 
     return (
 // Está buscando os dados de login, mas na versão final como são muitos dados a ideia é exibir somente os principais e ao clicar carregar a página com todos os dados     
-      <div>
+      
 
+      <div>
+      
       <Table striped bordered hover>
       <thead>
         <tr>
@@ -46,12 +48,12 @@ function Cadastro(){
       <tbody>
         {listAlunos.map((aluno) =>
             <tr>
-              <td>1</td> 
-              <td> {aluno.email}</td>
-              <td>{aluno.password}</td>
+              <td>{aluno.idalunos}</td> 
+              <td> {aluno.dataDeNascimento}</td>
+              <td>{aluno.cpf}</td>
               <td>  
-                <Button variant="success" onClick={() => window.open(`http://localhost:3000/update/${aluno.email}`, "_self")}>Atualizar</Button>
-                <Button variant="danger" onClick={() => handleDelete(aluno.email)}>Excluir</Button>
+                <Button variant="success" onClick={() => window.open(`http://localhost:3000/update/${aluno.idalunos}`, "_self")}>Atualizar</Button>
+                <Button variant="danger" onClick={() => handleDelete(aluno.idalunos)}>Excluir</Button>
               </td>
             </tr>
         )}
@@ -63,6 +65,7 @@ function Cadastro(){
           <a href="https://github.com/marcelocsn"><i className="fab fa-github"></i> marcelocsn </a> © 2023 - Todos os direitos reservados.
         </footer>
     </div>
+    
     )      
 }
 
