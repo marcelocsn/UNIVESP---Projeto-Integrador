@@ -5,7 +5,6 @@ import Login from './pages/login';
 import Home from './pages/home';
 import Cadastro from "./pages/formulario";
 import Admin from "./pages/admin";
-import Update from "./pages/update";
 
 export default function mainRoutes()  {
 
@@ -13,9 +12,8 @@ export default function mainRoutes()  {
         <Routes>
             <Route path="/" element = {<Home/>}/>
             <Route path="/login" element = {<Login/>}/>
-            <Route path="/cadastro" element = {<Cadastro/>}/>
+            <Route path="/cadastro/:id?" element = {<Cadastro/>}/>
             <Route path="/admin" element = {<Admin/>}/>
-            <Route path="/update/:id?" element = {<Update/>}/>
         </Routes>
     );
 }

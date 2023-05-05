@@ -52,7 +52,7 @@ function Cadastro(){
               <td> {aluno.dataDeNascimento}</td>
               <td>{aluno.cpf}</td>
               <td>  
-                <Button variant="success" onClick={() => window.open(`http://localhost:3000/update/${aluno.idalunos}`, "_self")}>Atualizar</Button>
+                <Button variant="success" onClick={() => window.open(`http://localhost:3000/cadastro/${aluno.idalunos}`, "_self")}>Atualizar</Button>
                 <Button variant="danger" onClick={() => handleDelete(aluno.idalunos)}>Excluir</Button>
               </td>
             </tr>
