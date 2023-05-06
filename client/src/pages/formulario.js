@@ -1,4 +1,3 @@
-//Página de cadastro que foi compartilhada no whatsapp, o usuário será redirecionado para cá após realizar o login
 //Melhorias: Validação CPF, CEP, mascara nos campos de CPF, Placa veículos e preencher automaticamente campos de endereço com base no CEP usando API viacep
 
 import React, {useState, useEffect} from "react";
@@ -237,7 +236,7 @@ function Formulario(){
       <Formik 
       onSubmit={handleSubmit}
       enableReinitialize={true}
-      //validationSchema={schema}
+      validationSchema={schema}
       initialValues={{
           idalunos: dadosAluno.idalunos,
           pelotao: dadosAluno.pelotao,
