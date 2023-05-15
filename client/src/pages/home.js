@@ -4,20 +4,25 @@ import logo from "../images/logo.png";
 import * as yup from "yup";
 import { ErrorMessage, Formik, Form, Field } from "formik";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 //Antiga página app.js
 
 function App() {
+
+  const navigate = useNavigate();
   
   //funções que são chamadas no submit 
   const handleLogin = (values) => {
+    
     Axios.post("http://localhost:3001/login", {
       email: values.email,
       password: values.password,
     }).then((response) => {
       alert(response.data.msg);
-      if (response.data.msg === "Usuário logado") window.open("http://localhost:3000/cadastro", "_self");
+      //if (response.data.msg === "Usuário logado") window.open("http://localhost:3000/cadastro", "_self");
+      if (response.data.msg === "Usuário logado") navigate("/cadastro");
     });
   };
 

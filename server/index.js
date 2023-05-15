@@ -3,7 +3,8 @@ const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
+const jwt = require("jsonwebtoken");
+
 
 //Dados para conexão com o banco de dados
 const db = mysql.createPool({
@@ -16,35 +17,72 @@ const db = mysql.createPool({
 app.use(express.json());
 app.use(cors());
 
+
+function validateLogin(req){
+  const authHeader = req.headers.authorization;
+  if(!authHeader) return false;
+  
+  const [,token] = authHeader.split(' ');
+  if(!token) return false
+
+  try{
+      jwt.verify(token, 'FDC54S88E4F56DH54B843');
+      return true;
+  }catch(err){
+      return false;
+  }
+}
+
 app.get("/getData", (req,res)=>{
 
-  let sqlQuery = "SELECT * from alunos";
-  db.query(sqlQuery,(err,result)=>{
-    if (err) console.log(err);
-    else res.send(result);
-  });
-  
+  if (validateLogin(req)){
+
+    let sqlQuery = "SELECT * from alunos";
+    db.query(sqlQuery,(err,result)=>{
+      if (err) console.log(err);
+      else res.send(result);
+    });
+  } else {
+    return res.status(401).json({
+      erro: true,
+      mensagem: "Necessário realizar o login"  
+    })
+  }
 });
 
 //Busca os dados de um aluno específico passando id por parâmetro
 app.get("/getById/:id", (req,res)=>{
-  const {id} = req.params; //Captura o id passado na URL
-  let sqlQuery = "SELECT * from alunos WHERE idalunos = ?"; //Busca os dados do aluno
-  db.query(sqlQuery, [id], (err,result)=>{
-    if (err) console.log(err);
-    else res.send(result);
-  });
-  
+
+  if (validateLogin(req)){
+    const {id} = req.params; //Captura o id passado na URL
+    let sqlQuery = "SELECT * from alunos WHERE idalunos = ?"; //Busca os dados do aluno
+    db.query(sqlQuery, [id], (err,result)=>{
+      if (err) console.log(err);
+      else res.send(result);
+    });
+  } else{
+      return res.status(401).json({
+      erro: true,
+      mensagem: "Necessário realizar o login"  
+    })
+  }  
 });
 
-//Deleta caadastro passando id por parâmetro
+//Deleta cadastro passando id por parâmetro
 app.delete("/delete/:id", (req, res) =>{
-  const {id} = req.params; //Captura o id passado na URL
-  let SQL = "DELETE FROM alunos WHERE idalunos = ?"; //Executa a query para deletar o aluno com aquele id
-  db.query(SQL, [id], (err, result)=>{
-    if (err) console.log(err);
-    else res.send(result);
-  });
+  if (validateLogin(req)){
+    const {id} = req.params; //Captura o id passado na URL
+    let SQL = "DELETE FROM alunos WHERE idalunos = ?"; //Executa a query para deletar o aluno com aquele id
+    db.query(SQL, [id], (err, result)=>{
+      if (err) console.log(err);
+      else res.send(result);
+    });
+  } else{
+    return res.status(401).json({
+      erro: true,
+      mensagem: "Necessário realizar o login"  
+    })
+  }
 });
 
 app.post("/registerAluno", (req, res) => {
@@ -180,7 +218,7 @@ app.post("/register", (req, res) => {
       res.send(err);
     }
     if (result.length == 0) {
-      bcrypt.hash(password, saltRounds, (err, hash) => {
+      bcrypt.hash(password, 10, (err, hash) => {
         db.query(
           "INSERT INTO usuarios (email, password) VALUE (?,?)",
           [email, hash],
@@ -223,6 +261,63 @@ app.post("/login", (req, res) => {
     }
   });
 });
+
+//Rota de login para a página adm, aqui por simplicidade está usando a mesma tabela do login do formulário, em produção deve-se criar uma tabela separada. A criação das credenciais a princípio deve ser feita diretamente no banco de dados
+//Essa função é chamada dentro do contexto
+app.post("/admLogin", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //Busca os dados do email informado no banco de dados
+  db.query("SELECT * FROM usuarios WHERE email = ?", [email], (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    //Se não encontrar, email incorreto
+    if (result.length === 0) {
+      res.status(400).json({ 
+        erro: true,
+        msg: "Usuário ou senha incorreta!" 
+      });
+    //Verifica se a senha está correta  
+    } else {
+      bcrypt.compare(password, result[0].password, (error, response) => {
+        if (error) {
+          res.status(400).send(error);
+        }
+        //Validada a senha gera-se um token e envia ao usuário, esse token é armazenado no navegador do usuário, ao recarregar a página ou navegar para outra página o token é recuperado e validado, não sendo necessário fazer o login novamente
+        //O primeiro parâmetro da função são os valores que estarão embutidos no token, o segundo é uma senha única que gera o token e o terceiro a validade do token
+        if (response) {
+          var token = jwt.sign ({id: result[0].password}, 'FDC54S88E4F56DH54B843', {expiresIn: 600} )
+          res.json({ 
+            error: false,
+            msg: "Usuário logado",
+            token 
+          });
+        } else {
+          res.send({ msg: "Senha incorreta" });
+        }
+      });
+
+    }
+  });
+});
+
+//Rota usada para validar se o token armazenado no navegador é válido
+app.post("/validateToken", (req,res)=>{
+
+  try{
+    jwt.verify(req.body.recoveredUser, 'FDC54S88E4F56DH54B843');
+    res.json({ 
+      authenticated: true,
+    });
+  }catch(err){
+    return res.json({
+        authenticated: false,
+    });
+  }
+});
+
 
 app.listen(3001, () => {
   console.log("rodando na porta 3001");
