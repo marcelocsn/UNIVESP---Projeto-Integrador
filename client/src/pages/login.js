@@ -1,28 +1,22 @@
-//Página de login para acessar a página de interface com o banco de dados, só copiei da página App, não testei nada
+//Página de login para acessar a página de interface com o banco de dados.
 
-import React from "react";
-//import { useState } from "react";
+import React, {useContext} from "react";
+import { AuthContext } from "../contexts/auth";
 import "../App.css";
 import logo from "../images/logo.png";
 import * as yup from "yup";
 import { ErrorMessage, Formik, Form, Field } from "formik";
-import Axios from "axios";
-//import {BrowserRouter} from 'react-router-dom'
-//import Routes from './Routes'
 
 
 function App() {
 
-  const handleRegister = (values) => {
+  const {login} = useContext(AuthContext);
+
+  const handleLogin = (values) => {
     
-    console.log('SUBMIT',values);
-    /*Axios.post("http://localhost:3001/register", {
-      email: values.email,
-      password: values.password,
-    }).then((response) => {
-      alert(response.data.msg);
-      console.log(response);
-    });*/
+    const email = values.email;
+    const password = values.password;
+    login(email, password);
   };
 
   const validationsLogin = yup.object().shape({
@@ -36,78 +30,46 @@ function App() {
       .required("A senha é obrigatória"),
   });
 
-  const validationsRegister = yup.object().shape({
-    email: yup
-      .string()
-      .email("email inválido")
-      .required("O email é obrigatório"),
-    password: yup
-      .string()
-      .min(8, "A senha deve ter pelo menos 8 caracteres")
-      .required("A senha é obrigatória"),
-    confirmation: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "As senhas são diferentes")
-      .required("A confirmação da senha é obrigatória"),
-  });
-
-  return (
+    return (
     <div className="container">
-      <h1>Cadastro</h1>
-      <Formik
-        initialValues={{}}
-        onSubmit={handleRegister}
-        validationSchema={validationsRegister}
-      >
-        <Form className="register-form">
-          <div className="register-form-group">
-            <Field name="email" className="form-field" placeholder="Email" /*onChange={(e)=>{
-              setEmail(e.target.value);
-            }} */
-            />
+    <img src={logo} alt="Logo" className="logo" />
+     <h1>Login</h1>
+       <Formik
+       initialValues={{email: '', password: ''}}
+       onSubmit={handleLogin}
+       validationSchema={validationsLogin}
+     >
+       <Form className="login-form">
+         <div className="login-form-group">
+           <Field name="email" className="form-field" placeholder="Email" />
 
-            <ErrorMessage
-              component="span"
-              name="email"
-              className="form-error"
-            />
-          </div>
+           <ErrorMessage
+             component="span"
+             name="email"
+             className="form-error"
+           />
+           
+         </div>
+         {/*Outro campo*/}
+         <div className="form-group">
+           <Field type="password" name="password" className="form-field" placeholder="Senha" />
 
-          <div className="form-group">
-            <Field name="password" className="form-field" placeholder="Senha" /*onChange={(e)=>{
-              setPassword(e.target.value);
-            }}*/
-            />
+           <ErrorMessage
+             component="span"
+             name="password"
+             className="form-error"
+           />
+         </div>
 
-            <ErrorMessage
-              component="span"
-              name="password"
-              className="form-error"
-            />
-          </div>
-
-          <div className="form-group">
-            <Field
-              name="confirmation"
-              className="form-field"
-              placeholder="Senha"
-            />
-
-            <ErrorMessage
-              component="span"
-              name="confirmation"
-              className="form-error"
-            />
-          </div>
-
-          <button  /*onClick={submitReview} disabled ={!isValid} */ className="button" type="submit">
-            Cadastrar
-          </button>
-        </Form>
-      </Formik>
+         <button className="button" type="submit">
+           Login
+         </button>
+       </Form>
+     </Formik>
 
       <footer className="footer">
       <a href="https://github.com/paulocp-tech"><i className="fab fa-github"></i> paulocp-tech </a>
+      <a href="https://github.com/lfernandomorales"><i className="fab fa-github"></i> lfernandomorales </a>
       <a href="https://github.com/marcelocsn"><i className="fab fa-github"></i> marcelocsn </a> © 2023 - Todos os direitos reservados.
     </footer>
     </div>

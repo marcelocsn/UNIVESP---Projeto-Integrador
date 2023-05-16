@@ -1,125 +1,33 @@
-import React from 'react';
-import { Form, Formik, Field, ErrorMessage } from 'formik';
-import '../styles/Formulario.css';
-import schema from '../schemas/formularioSchema';
-import Axios from 'axios';
+//Melhorias: Validação CPF, CEP, mascara nos campos de CPF, Placa veículos e preencher automaticamente campos de endereço com base no CEP usando API viacep, incluir foto do aluno
 
-//Página de cadastro que foi compartilhada no whatsapp, o usuário será redirecionado para cá após realizar o login
-//Melhorias: Validação CPF, CEP, mascara nos campos de CPF, Placa veículos e preencher automaticamente campos de endereço com base no CEP usando API
+import React, {useState, useEffect, useContext} from "react";
+import "../App.css";
+import "../styles/Formulario.css"
+import { ErrorMessage, Formik, Form, Field } from "formik";
+import Axios from "axios";
+import { useParams } from "react-router-dom";
+import schema from "../schemas/formularioSchema";
+import { AuthContext } from "../contexts/auth";
 
-function Formulario() {
+  
+function Formulario(){
+  
+  //Importa o token do contexto para poder buscar os dados do usuário
+  const {user, loading} = useContext(AuthContext);
 
-  const handleSubmit = (values, actions) => {
-    //Transformar strings vazias em null para não dar problema de tipo no banco de dados. Se inicializar com null não consegui fazer o Yup rodar as validações
-    const newValues = {...values};
-    for(let key in newValues){
-      if(newValues[key]==='') newValues[key] = null;
-    }
-    console.log(newValues);
-
-    Axios.post("http://localhost:3001/registerAluno", {
-      nomeCompleto: newValues.nomeCompleto,
-      dataDeNascimento: newValues.dataDeNascimento,
-      rg: newValues.rg,
-      cpf: newValues.cpf,
-      sexo: newValues.sexo,
-      telefoneCelular: newValues.telefoneCelular,
-      telefoneContato: newValues.telefoneContato,
-      natural: newValues.natural,
-      ufNascimento: newValues.ufNascimento,
-      emailPessoal: newValues.emailPessoal,
-      emailFuncional: newValues.emailFuncional,
-      religiao: newValues.religiao,
-      númeroRegistroCnh: newValues.númeroRegistroCnh,
-      vencimentoDaCnh: newValues.vencimentoDaCnh,
-      categoriaDaCnh: newValues.categoriaDaCnh,
-      suasRedesSociais: newValues.suasRedesSociais,
-      pelotao: newValues.pelotao,
-      numeroAluno: newValues.numeroAluno,
-      re: newValues.re,
-      nomeDeGuerra: newValues.nomeDeGuerra,
-      dataDeAdmissão: newValues.dataDeAdmissão,
-      remanescente: newValues.remanescente,
-      númeroDaCarteiraProfissional: newValues.númeroDaCarteiraProfissional,
-      númeroDeSérieDaCarteiraProfissional: newValues.númeroDeSérieDaCarteiraProfissional,
-      númeroPisPasep: newValues.númeroPisPasep,
-      estadoCivil: newValues.estadoCivil,
-      possuiFilhosQuantos: newValues.possuiFilhosQuantos,
-      dataDeCasamento: newValues.dataDeCasamento,
-      nomeDoCônjuge: newValues.nomeDoCônjuge,
-      dataDeNascimentoDoCônjuge: newValues.dataDeNascimentoDoCônjuge,
-      profissãoDoCônjuge: newValues.profissãoDoCônjuge,
-      nomeDoPai: newValues.nomeDoPai,
-      nomeDaMãe: newValues.nomeDaMãe,
-      profissãoDoPai: newValues.profissãoDoPai,
-      profissãoDaMãe: newValues.profissãoDaMãe,
-      nivelInstrucao: newValues.nivelInstrucao,
-      cursoSuperiorQual: newValues.cursoSuperiorQual,
-      idiomasQueFala: newValues.idiomasQueFala,
-      númeroTítuloDeEleitor: newValues.númeroTítuloDeEleitor,
-      númeroZonaVotação: newValues.númeroZonaVotação,
-      númeroDaSeção: newValues.númeroDaSeção,
-      cidadeEmQueVota: newValues.cidadeEmQueVota,
-      citeUmBancoEmQuePossuiConta: newValues.citeUmBancoEmQuePossuiConta,
-      tipoDeConta: newValues.tipoDeConta,
-      agência: newValues.agência,
-      númeroDaConta: newValues.númeroDaConta,
-      sinaisParticulares: newValues.sinaisParticulares,
-      suaAltura: newValues.suaAltura,
-      cútis: newValues.cútis,
-      corDosOlhos: newValues.corDosOlhos,
-      corDosCabelos: newValues.corDosCabelos,
-      tipoDeCabelo: newValues.tipoDeCabelo,
-      tipoSanguineo: newValues.tipoSanguineo,
-      fatorRh: newValues.fatorRh,
-      possuiAlergiaAAlgumAlimentoOuMedicação: newValues.possuiAlergiaAAlgumAlimentoOuMedicação,
-      jaTeveOuPossuiAlgumaDoençaGrave: newValues.jaTeveOuPossuiAlgumaDoençaGrave,
-      possuiPlanoDeSaúde: newValues.possuiPlanoDeSaúde,
-      endereçoEmRibeirãoPreto: newValues.endereçoEmRibeirãoPreto,
-      bairro: newValues.bairro,
-      cep: newValues.cep,
-      pontoDeReferência: newValues.pontoDeReferência,
-      dpRibeirãoPreto: newValues.dpRibeirãoPreto,
-      batalhãoCidadeDeResidência: newValues.batalhãoCidadeDeResidência,
-      ciaRibeirãoPreto: newValues.ciaRibeirãoPreto,
-      seMorarComOutrosPmsInformarNomeEPelotãoDoPm: newValues.seMorarComOutrosPmsInformarNomeEPelotãoDoPm,
-      possuiResidênciaPrópria: newValues.possuiResidênciaPrópria,
-      possuiCarro: newValues.possuiCarro,
-      placaCarro: newValues.placaCarro,
-      modeloCarro: newValues.modeloCarro,
-      anoCarro: newValues.anoCarro,
-      possuiMoto: newValues.possuiMoto,
-      placaMoto: newValues.placaMoto,
-      modeloMoto: newValues.modeloMoto,
-      anoMoto: newValues.anoMoto,
-      jaFoiConduzidoAoDp: newValues.jaFoiConduzidoAoDp,
-      seSimInformeOMotivo: newValues.seSimInformeOMotivo,
-      jaRespondeuOuRespondeInquéritoPolicial: newValues.jaRespondeuOuRespondeInquéritoPolicial,
-      oQueVocêAlmejaNaPM: newValues.oQueVocêAlmejaNaPM,
-      quantasVezesJáPrestouParaAPm: newValues.quantasVezesJáPrestouParaAPm,
-      reprovadoEmQueFase: newValues.reprovadoEmQueFase,
-      possuiParentesPM: newValues.possuiParentesPM,
-      seSimInformeONomeDoParentePM: newValues.seSimInformeONomeDoParentePM,
-      tomouVacinaDaCovid: newValues.tomouVacinaDaCovid,
-      dataPrimeiraDose: newValues.dataPrimeiraDose,
-      laboratorioPrimeiraDose: newValues.laboratorioPrimeiraDose,
-      dataSegundaDose: newValues.dataSegundaDose,
-      laboratorioSegundaDose: newValues.laboratorioSegundaDose,
-      dataTerceiraDose: newValues.dataTerceiraDose,
-      laboratorioTerceriaDose: newValues.laboratorioTerceriaDose,
-    }).then((response) => {
-      alert(response.data.msg);
-      console.log(response);
-    });
-
-    // envie os dados do formulário para a API ou armazene-os em algum lugar
-  };
-
-  return (
-    <Formik
-      onSubmit={handleSubmit}
-      validationSchema={schema}
-      initialValues={{
+  //Configura a conexão do axios com a API incluindo o token no cabeçalho
+  const apiConection = Axios.create({
+    baseURL: 'http://localhost:3001/',
+    timeout: 1000,
+    headers: {'Authorization': 'Bearer '+user}
+  });
+    
+    //Captura o id do aluno passado por parâmetro na URL
+    const idAluno = useParams();
+    
+    //Inicializei os campos para não dar erro na hora de jogar nos campos
+    const [dadosAluno, setDadosAluno] = useState({
+          idalunos: '',
           pelotao: '',
           numeroAluno: '',
           re: '',
@@ -208,7 +116,233 @@ function Formulario() {
           dataTerceiraDose: '',
           laboratorioTerceiraDose: '',
           religiao: '',
-          nivelInstrucao:'',
+          nivelInstrucao:''});
+
+
+    //Busca os dados do aluno com o id passado por parâmetro
+    useEffect (() =>{
+      if (!loading){ //Faz a requisição somente depois de recuperar os dados do localStorage
+        if (JSON.stringify(idAluno) !== "{}"){ //verifica se o objeto não está vazio
+          apiConection.get(`/getById/${idAluno.id}`)
+            .then((response)=>{
+              //Troca null por '' para não dar erro no formulário
+              for(let key in response.data[0]){
+                if(response.data[0][key]===null) response.data[0][key] = '';
+              }
+            setDadosAluno(response.data[0]);
+            })
+        }
+      }
+    }, [loading, idAluno, apiConection]); //Executa toda vez que o status loading muda.
+  
+
+    //Testar se esta recebendo os dados
+    //console.log(dadosAluno);
+
+    const handleSubmit = (values, actions) => {
+      //Transformar strings vazias em null para não dar problema de tipo no banco de dados. Se inicializar com null não consegui fazer o Yup rodar as validações
+      const newValues = {...values};
+      for(let key in newValues){
+        if(newValues[key]==='') newValues[key] = null;
+      }
+      //console.log(newValues);
+    
+      Axios.post("http://localhost:3001/registerAluno", {
+        idalunos: newValues.idalunos,  
+        nomeCompleto: newValues.nomeCompleto,
+        dataDeNascimento: newValues.dataDeNascimento,
+        rg: newValues.rg,
+        cpf: newValues.cpf,
+        sexo: newValues.sexo,
+        telefoneCelular: newValues.telefoneCelular,
+        telefoneContato: newValues.telefoneContato,
+        natural: newValues.natural,
+        ufNascimento: newValues.ufNascimento,
+        emailPessoal: newValues.emailPessoal,
+        emailFuncional: newValues.emailFuncional,
+        religiao: newValues.religiao,
+        númeroRegistroCnh: newValues.númeroRegistroCnh,
+        vencimentoDaCnh: newValues.vencimentoDaCnh,
+        categoriaDaCnh: newValues.categoriaDaCnh,
+        suasRedesSociais: newValues.suasRedesSociais,
+        pelotao: newValues.pelotao,
+        numeroAluno: newValues.numeroAluno,
+        re: newValues.re,
+        nomeDeGuerra: newValues.nomeDeGuerra,
+        dataDeAdmissão: newValues.dataDeAdmissão,
+        remanescente: newValues.remanescente,
+        númeroDaCarteiraProfissional: newValues.númeroDaCarteiraProfissional,
+        númeroDeSérieDaCarteiraProfissional: newValues.númeroDeSérieDaCarteiraProfissional,
+        númeroPisPasep: newValues.númeroPisPasep,
+        estadoCivil: newValues.estadoCivil,
+        possuiFilhosQuantos: newValues.possuiFilhosQuantos,
+        dataDeCasamento: newValues.dataDeCasamento,
+        nomeDoCônjuge: newValues.nomeDoCônjuge,
+        dataDeNascimentoDoCônjuge: newValues.dataDeNascimentoDoCônjuge,
+        profissãoDoCônjuge: newValues.profissãoDoCônjuge,
+        nomeDoPai: newValues.nomeDoPai,
+        nomeDaMãe: newValues.nomeDaMãe,
+        profissãoDoPai: newValues.profissãoDoPai,
+        profissãoDaMãe: newValues.profissãoDaMãe,
+        nivelInstrucao: newValues.nivelInstrucao,
+        cursoSuperiorQual: newValues.cursoSuperiorQual,
+        idiomasQueFala: newValues.idiomasQueFala,
+        númeroTítuloDeEleitor: newValues.númeroTítuloDeEleitor,
+        númeroZonaVotação: newValues.númeroZonaVotação,
+        númeroDaSeção: newValues.númeroDaSeção,
+        cidadeEmQueVota: newValues.cidadeEmQueVota,
+        citeUmBancoEmQuePossuiConta: newValues.citeUmBancoEmQuePossuiConta,
+        tipoDeConta: newValues.tipoDeConta,
+        agência: newValues.agência,
+        númeroDaConta: newValues.númeroDaConta,
+        sinaisParticulares: newValues.sinaisParticulares,
+        suaAltura: newValues.suaAltura,
+        cútis: newValues.cútis,
+        corDosOlhos: newValues.corDosOlhos,
+        corDosCabelos: newValues.corDosCabelos,
+        tipoDeCabelo: newValues.tipoDeCabelo,
+        tipoSanguineo: newValues.tipoSanguineo,
+        fatorRh: newValues.fatorRh,
+        possuiAlergiaAAlgumAlimentoOuMedicação: newValues.possuiAlergiaAAlgumAlimentoOuMedicação,
+        jaTeveOuPossuiAlgumaDoençaGrave: newValues.jaTeveOuPossuiAlgumaDoençaGrave,
+        possuiPlanoDeSaúde: newValues.possuiPlanoDeSaúde,
+        endereçoEmRibeirãoPreto: newValues.endereçoEmRibeirãoPreto,
+        bairro: newValues.bairro,
+        cep: newValues.cep,
+        pontoDeReferência: newValues.pontoDeReferência,
+        dpRibeirãoPreto: newValues.dpRibeirãoPreto,
+        batalhãoCidadeDeResidência: newValues.batalhãoCidadeDeResidência,
+        ciaRibeirãoPreto: newValues.ciaRibeirãoPreto,
+        seMorarComOutrosPmsInformarNomeEPelotãoDoPm: newValues.seMorarComOutrosPmsInformarNomeEPelotãoDoPm,
+        possuiResidênciaPrópria: newValues.possuiResidênciaPrópria,
+        possuiCarro: newValues.possuiCarro,
+        placaCarro: newValues.placaCarro,
+        modeloCarro: newValues.modeloCarro,
+        anoCarro: newValues.anoCarro,
+        possuiMoto: newValues.possuiMoto,
+        placaMoto: newValues.placaMoto,
+        modeloMoto: newValues.modeloMoto,
+        anoMoto: newValues.anoMoto,
+        jaFoiConduzidoAoDp: newValues.jaFoiConduzidoAoDp,
+        seSimInformeOMotivo: newValues.seSimInformeOMotivo,
+        jaRespondeuOuRespondeInquéritoPolicial: newValues.jaRespondeuOuRespondeInquéritoPolicial,
+        oQueVocêAlmejaNaPM: newValues.oQueVocêAlmejaNaPM,
+        quantasVezesJáPrestouParaAPm: newValues.quantasVezesJáPrestouParaAPm,
+        reprovadoEmQueFase: newValues.reprovadoEmQueFase,
+        possuiParentesPM: newValues.possuiParentesPM,
+        seSimInformeONomeDoParentePM: newValues.seSimInformeONomeDoParentePM,
+        tomouVacinaDaCovid: newValues.tomouVacinaDaCovid,
+        dataPrimeiraDose: newValues.dataPrimeiraDose,
+        laboratorioPrimeiraDose: newValues.laboratorioPrimeiraDose,
+        dataSegundaDose: newValues.dataSegundaDose,
+        laboratorioSegundaDose: newValues.laboratorioSegundaDose,
+        dataTerceiraDose: newValues.dataTerceiraDose,
+        laboratorioTerceriaDose: newValues.laboratorioTerceriaDose,
+      }).then((response) => {
+        alert(response.data.msg);
+        console.log(response);
+      });
+    
+      // envie os dados do formulário para a API ou armazene-os em algum lugar
+    };
+
+    return (
+     <div> 
+      <Formik 
+      onSubmit={handleSubmit}
+      enableReinitialize={true}
+      validationSchema={schema}
+      initialValues={{
+          idalunos: dadosAluno.idalunos,
+          pelotao: dadosAluno.pelotao,
+          numeroAluno: dadosAluno.numeroAluno,
+          re: dadosAluno.re,
+          nomeCompleto: dadosAluno.nomeCompleto,
+          nomeDeGuerra: dadosAluno.nomeDeGuerra,
+          dataDeAdmissão: dadosAluno.dataDeAdmissão.split("T")[0], //Captura somente a data, uma vez que o banco de dados envia a data no fomato ISO
+          dataDeNascimento: dadosAluno.dataDeNascimento.split("T")[0],
+          remanescente: dadosAluno.remanescente,
+          rg: dadosAluno.rg,
+          cpf: dadosAluno.cpf,
+          sexo:  dadosAluno.sexo,
+          telefoneCelular: dadosAluno.telefoneCelular,
+          telefoneContato: dadosAluno.telefoneContato,
+          natural: dadosAluno.natural,
+          ufNascimento: dadosAluno.ufNascimento,
+          cursoSuperiorQual: dadosAluno.cursoSuperiorQual,
+          estadoCivil: dadosAluno.estadoCivil,
+          possuiFilhosQuantos:  dadosAluno.possuiFilhosQuantos,
+          dataDeCasamento: dadosAluno.dataDeCasamento.split("T")[0],
+          nomeDoCônjuge: dadosAluno.nomeDoCônjuge,
+          dataDeNascimentoDoCônjuge: dadosAluno.dataDeNascimentoDoCônjuge.split("T")[0],
+          profissãoDoCônjuge: dadosAluno.profissãoDoCônjuge,
+          suasRedesSociais: dadosAluno.suasRedesSociais,
+          nomeDoPai: dadosAluno.nomeDoPai,
+          profissãoDoPai: dadosAluno.profissãoDoPai,
+          nomeDaMãe: dadosAluno.nomeDaMãe,
+          profissãoDaMãe: dadosAluno.profissãoDaMãe,
+          sinaisParticulares: dadosAluno.sinaisParticulares,
+          suaAltura: dadosAluno.suaAltura,
+          cútis: dadosAluno.cútis,
+          corDosOlhos: dadosAluno.corDosOlhos,
+          corDosCabelos: dadosAluno.corDosCabelos,
+          tipoDeCabelo: dadosAluno.tipoDeCabelo,
+          idiomasQueFala: dadosAluno.idiomasQueFala,
+          tipoSanguineo: dadosAluno.tipoSanguineo,
+          fatorRh: dadosAluno.fatorRh,
+          citeUmBancoEmQuePossuiConta: dadosAluno.citeUmBancoEmQuePossuiConta,
+          tipoDeConta: dadosAluno.tipoDeConta,
+          agência: dadosAluno.agência,
+          númeroDaConta: dadosAluno.númeroDaConta,
+          númeroDaCarteiraProfissional: dadosAluno.númeroDaCarteiraProfissional,
+          númeroDeSérieDaCarteiraProfissional: dadosAluno.númeroDeSérieDaCarteiraProfissional,
+          númeroPisPasep: dadosAluno.númeroPisPasep,
+          númeroTítuloDeEleitor: dadosAluno.númeroTítuloDeEleitor,
+          númeroZonaVotação: dadosAluno.númeroZonaVotação,
+          númeroDaSeção: dadosAluno.númeroDaSeção,
+          cidadeEmQueVota: dadosAluno.cidadeEmQueVota,
+          númeroRegistroCnh: dadosAluno.númeroRegistroCnh,
+          vencimentoDaCnh: dadosAluno.vencimentoDaCnh,
+          categoriaDaCnh: dadosAluno.categoriaDaCnh,
+          endereçoEmRibeirãoPreto: dadosAluno.endereçoEmRibeirãoPreto,
+          bairro: dadosAluno.bairro,
+          cep: dadosAluno.cep,
+          pontoDeReferência: dadosAluno.pontoDeReferência,
+          dpRibeirãoPreto: dadosAluno.dpRibeirãoPreto,
+          batalhãoCidadeDeResidência: dadosAluno.batalhãoCidadeDeResidência,
+          ciaRibeirãoPreto: dadosAluno.ciaRibeirãoPreto,
+          emailPessoal: dadosAluno.emailPessoal,
+          emailFuncional: dadosAluno.emailFuncional,
+          seMorarComOutrosPmsInformarNomeEPelotãoDoPm: dadosAluno.seMorarComOutrosPmsInformarNomeEPelotãoDoPm,
+          possuiResidênciaPrópria: dadosAluno.possuiResidênciaPrópria,
+          possuiCarro: dadosAluno.possuiCarro,
+          placaCarro: dadosAluno.placaCarro,
+          modeloCarro: dadosAluno.modeloCarro,
+          anoCarro: dadosAluno.anoCarro,
+          possuiMoto: dadosAluno.possuiMoto,
+          placaMoto: dadosAluno.placaMoto,
+          modeloMoto: dadosAluno.modeloMoto,
+          anoMoto: dadosAluno.anoMoto,
+          jaFoiConduzidoAoDp:  dadosAluno.jaFoiConduzidoAoDp,
+          seSimInformeOMotivo: dadosAluno.seSimInformeOMotivo,
+          jaRespondeuOuRespondeInquéritoPolicial: dadosAluno.jaRespondeuOuRespondeInquéritoPolicial,
+          JáTeveOuPossuiAlgumaDoençaGrave: dadosAluno.JáTeveOuPossuiAlgumaDoençaGrave,
+          oQueVocêAlmejaNaPM: dadosAluno.oQueVocêAlmejaNaPM,
+          possuiAlergiaAAlgumAlimentoOuMedicação: dadosAluno.possuiAlergiaAAlgumAlimentoOuMedicação,
+          possuiPlanoDeSaúde: dadosAluno.possuiPlanoDeSaúde,
+          quantasVezesJáPrestouParaAPm: dadosAluno.quantasVezesJáPrestouParaAPm,
+          reprovadoEmQueFase: dadosAluno.reprovadoEmQueFase,
+          possuiParentesPM: dadosAluno.possuiParentesPM,
+          seSimInformeONomeDoParentePM: dadosAluno.seSimInformeONomeDoParentePM,
+          tomouVacinaDaCovid: dadosAluno.tomouVacinaDaCovid,
+          dataPrimeiraDose: dadosAluno.dataPrimeiraDose.split("T")[0],
+          laboratorioPrimeiraDose: dadosAluno.laboratorioPrimeiraDose,
+          dataSegundaDose: dadosAluno.dataSegundaDose.split("T")[0],
+          laboratorioSegundaDose: dadosAluno.laboratorioSegundaDose,
+          dataTerceiraDose: dadosAluno.dataTerceiraDose.split("T")[0],
+          laboratorioTerceiraDose: dadosAluno.laboratorioTerceiraDose,
+          religiao: dadosAluno.religiao,
+          nivelInstrucao: dadosAluno.nivelInstrucao,
           // adicione todos os campos aqui
       }}
       >
@@ -1509,7 +1643,16 @@ function Formulario() {
           </Form>
     )}
     </Formik>
-  );
+  
+
+        
+        <footer className="footer">
+          <a href="https://github.com/paulocp-tech"><i className="fab fa-github"></i> paulocp-tech </a>
+          <a href="https://github.com/lfernandomorales"><i className="fab fa-github"></i> lfernandomorales </a>
+          <a href="https://github.com/marcelocsn"><i className="fab fa-github"></i> marcelocsn </a> © 2023 - Todos os direitos reservados.
+        </footer>
+      </div>  
+      );
 }
 
 export default Formulario;

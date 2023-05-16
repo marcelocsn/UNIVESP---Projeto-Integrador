@@ -4,19 +4,25 @@ import logo from "../images/logo.png";
 import * as yup from "yup";
 import { ErrorMessage, Formik, Form, Field } from "formik";
 import Axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 //Antiga página app.js
 
 function App() {
+
+  const navigate = useNavigate();
   
   //funções que são chamadas no submit 
   const handleLogin = (values) => {
+    
     Axios.post("http://localhost:3001/login", {
       email: values.email,
       password: values.password,
     }).then((response) => {
       alert(response.data.msg);
+      //if (response.data.msg === "Usuário logado") window.open("http://localhost:3000/cadastro", "_self");
+      if (response.data.msg === "Usuário logado") navigate("/cadastro");
     });
   };
 
@@ -79,7 +85,7 @@ function App() {
           </div>
           {/*Outro campo*/}
           <div className="form-group">
-            <Field name="password" className="form-field" placeholder="Senha" />
+            <Field type="password" name="password" className="form-field" placeholder="Senha" />
 
             <ErrorMessage
               component="span"
@@ -112,7 +118,7 @@ function App() {
           </div>
 
           <div className="form-group">
-            <Field name="password" className="form-field" placeholder="Senha" />
+            <Field type="password" name="password" className="form-field" placeholder="Senha" />
 
             <ErrorMessage
               component="span"
@@ -123,6 +129,7 @@ function App() {
 
           <div className="form-group">
             <Field
+              type="password"
               name="confirmation"
               className="form-field"
               placeholder="Senha"
