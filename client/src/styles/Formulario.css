@@ -15,7 +15,7 @@
 label {
   display: block;
   margin-bottom: 5px;
-  color: #b5af6c;
+  color: #19180f;
   font-weight: bold;
   font-size: 18px;
 }
@@ -35,7 +35,7 @@ button[type="submit"] {
   display: block;
   width: 100%;
   padding: 10px;
-  background-color: #1E3A8A;
+  background-color: #b7bac0;
   color: #fff;
   border: none;
   border-radius: 5px;
